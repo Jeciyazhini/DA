@@ -1,6 +1,7 @@
-Apache Hadoop Installation Guide for v3.4.0
-Requirements
-Java
+# Apache Hadoop Installation Guide for v3.4.0
+## Requirements
+### Java
+
 Hadoop requires Java version 8.
 If you have a different version of Java installed, uninstall it via Control Panel --> Uninstall a program.
 Download Java version 8 from JavaJDKv8.
