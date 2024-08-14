@@ -1,69 +1,93 @@
-# Apache Hadoop Installation Guide for v3.4.0
-## Requirements
-### Java
+# Apache Hadoop Installation Manual for v3.4.0
 
-Hadoop requires Java version 8.
-If you have a different version of Java installed, uninstall it via Control Panel --> Uninstall a program.
-Download Java version 8 from JavaJDKv8.
-Choose Windows x86 Installer for Intel processors, otherwise download Windows x64 Installer.
-Proceed with the installation.
-7Zip
-Hadoop is distributed in compressed tarballs (.tar.gz), and 7Zip is an ideal tool for decompressing them.
-Download 7Zip from here.
-Install 7Zip.
-Hadoop
-Download Hadoop from the official release page: link.
-Ensure you download the binary version.
-Installation
-Decompression
-Run 7Zip as Administrator.
-Unzip the downloaded hadoop-<VER>.tar.gz file.
-This will generate a tarball (.tar) file.
-Unzip the tarball again.
-Copy the extracted folder to C:\.
-Decompression (Alternate Method)
-Open Command Prompt and run mkdir C:\Hadoop.
-Navigate to your Downloads directory and run tar -xvzf hadoop-3.3.0.tar.gz -C C:\Hadoop\.
-Setting up the Environment
-Search for Edit the System Environment Variables and select Environment Variables.
-Under System variables, click New and set the name to JAVA_HOME with the value as your JDK installation directory, e.g., C:\Java (this may vary depending on where you installed Java).
-Create another new variable named HADOOP_HOME with the value as your Hadoop installation directory, e.g., C:\Hadoop\hadoop-<VER> (adjust the path based on where you extracted Hadoop).
-You can verify that the Environment Variables are set correctly by typing echo %VARIABLE_NAME% in Command Prompt.
-Click on the Path variable, then click Edit.
-Add the following paths to the Path variables one by one:
-shell
-Copy code
+## Reqirements
+### Java
+- Hadoop requires Java version `8`
+- If you have Java installed already, Uninstall it from `Control Panel` --> `Uninstall a program`
+- Java version 8 can be downloaded from: [JavaJDKv8](https://www.oracle.com/in/java/technologies/javase/javase8u211-later-archive-downloads.html)
+- Download `Windows x86 Installer` if you have Intel processor, otherwise download `Windows x64 Installer`
+- Install the package
+
+### 7Zip
+- Hadoop comes in compressed tarballs (.tar.gz), 7Zip is a great tool to decompress them.
+- 7Zip can be downloaded from [download](https://www.7-zip.org/)
+- Install 7Zip
+
+### Hadoop
+- Download hadoop from officical release page: [link](https://hadoop.apache.org/releases.html)
+- Make sure to download the `binary`
+
+## Installation
+### Decompression
+- Open 7Zip as `Administrator`
+- Unzip the downloaded hadoop-<VER>.tar.gz.
+- This will produce a tarball (.tar) file.
+- Uzip tarball again.
+- Copy the Uzipped folder to C:\
+
+### Decompression (Alternate Way)
+- run `mkdir C:\Hadoop` in cmd
+- run `tar -xvzf  hadoop-3.3.0.tar.gz -C C:\Hadoop\` from the Downloads directory.
+
+### Setting up the Environment
+- Search for `Edit the System Environment Vairables` --> then click `Environment Variables`
+- Under `System variables` click `New` and name it `JAVA_HOME` and value as jdk installation directory `C:\Java` (may vary based on where you install java)
+- Again click `New` and name it `HADOOP_HOME` and value as hadoop installation directory `C:\Hadoop\hadoop-<VER>` (may vary based on where you extracted hadoop)
+- You can verify if the Environment Variables are set by `echo %VARIABLE_NAME%` in cmd.
+- Click on `Path` variable and click `Edit`
+- Add the following to Path variables one by one
+```
 %JAVA_HOME%/bin
 %HADOOP_HOME%/bin
-Verify the setup by running java -version and hadoop -version in Command Prompt.
-Additional Packages
-Download the bin.zip from the specified repository.
-Extract it and paste it into %HADOOP_HOME%\bin.
-Open and run winutils.exe from %HADOOP_HOME%\bin.
-Configuration
-Now, configure Hadoop with settings for Core, YARN, MapReduce, and HDFS.
+```
+- verify this by `java -version` and `hadoop -version` in cmd.
 
-Configure Core Site
-Edit the core-site.xml file located in the %HADOOP_HOME%\etc\hadoop folder.
-Replace the configuration element with the following:
-xml
-Copy code
+### Additional Packages
+- Download the `bin.zip` from this repository.
+- Extract it and paste it in `%HADOOP_HOME%\bin`
+- Open and run `winutils.exe` from `%HADOOP_HOME%\bin`
+
+## Configuration
+
+Now we are ready to configure the most important part - Hadoop configurations which involves Core, YARN, MapReduce, HDFS configurations. 
+
+### Configure core site
+
+Edit file **core-site.xml** in %HADOOP_HOME%\etc\hadoop folder. 
+
+For my environment, the actual path is C:\Hadoop\hadoop-3.4.0\etc\hadoop
+
+Replace configuration element with the following:
+
+```xml
 <configuration>
    <property>
      <name>fs.default.name</name>
      <value>hdfs://0.0.0.0:19000</value>
    </property>
 </configuration>
-Configure HDFS
-Edit the hdfs-site.xml file in the %HADOOP_HOME%\etc\hadoop folder.
-Create the following two subfolders on your system for the namenode and datanode directories:
-arduino
-Copy code
+```
+
+
+
+### Configure HDFS
+
+Edit file **hdfs-site.xml** in %HADOOP_HOME%\etc\hadoop folder. 
+
+Before editing, please correct two folders in your system: one for namenode directory and another for data directory.  For my system, I created the following two sub folders:
+
+```
 mkdir C:\hadoop\hadoop-3.4.0\data\datanode
+```
+
+```
 mkdir C:\hadoop\hadoop-3.4.0\data\namenode
-Replace the configuration element in hdfs-site.xml with:
-xml
-Copy code
+```
+
+
+Replace configuration element with the following (remember to replace the highlighted paths accordingly):
+
+```xml
 <configuration>
    <property>
      <name>dfs.replication</name>
@@ -78,27 +102,32 @@ Copy code
      <value>/hadoop/hadoop-3.4.0/data/datanode</value>
    </property>
 </configuration>
-Configure MapReduce and YARN Site
-Edit the mapred-site.xml file in the %HADOOP_HOME%\etc\hadoop folder.
+```
 
-Replace the configuration element with the following:
 
-xml
-Copy code
+
+### Configure MapReduce and YARN site
+
+Edit file **mapred-site.xml** in %HADOOP_HOME%\etc\hadoop folder. 
+
+Replace configuration element with the following:
+
+```xml
 <configuration>
     <property>
         <name>mapreduce.framework.name</name>
         <value>yarn</value>
     </property>
-    <property>
+    <property> 
         <name>mapreduce.application.classpath</name>
         <value>%HADOOP_HOME%/share/hadoop/mapreduce/*,%HADOOP_HOME%/share/hadoop/mapreduce/lib/*,%HADOOP_HOME%/share/hadoop/common/*,%HADOOP_HOME%/share/hadoop/common/lib/*,%HADOOP_HOME%/share/hadoop/yarn/*,%HADOOP_HOME%/share/hadoop/yarn/lib/*,%HADOOP_HOME%/share/hadoop/hdfs/*,%HADOOP_HOME%/share/hadoop/hdfs/lib/*</value>
     </property>
 </configuration>
-Edit the yarn-site.xml file in the %HADOOP_HOME%\etc\hadoop folder.
+```
 
-xml
-Copy code
+Edit file **yarn-site.xml** in %HADOOP_HOME%\etc\hadoop folder. 
+
+```xml
 <configuration>
     <property>
         <name>yarn.nodemanager.aux-services</name>
@@ -109,24 +138,38 @@ Copy code
         <value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAPRED_HOME,HADOOP_HOME</value>
     </property>
 </configuration>
-Initialization
-HDFS
-Format the HDFS namenode by running the following command in Command Prompt:
-lua
-Copy code
+```
+
+## Initialization
+### HDFS 
+
+Run the following command in Command Prompt 
+
+```
 hdfs namenode -format
-Start HDFS Daemons
-To start HDFS daemons, run the following command in Command Prompt:
-perl
-Copy code
+```
+
+### Start HDFS daemons 
+
+Run the following command to start HDFS daemons in Command Prompt:
+
+```
 %HADOOP_HOME%\sbin\start-dfs.cmd
-Two Command Prompt windows will open: one for the datanode and another for the namenode. Do not close these windows.
-Verify the HDFS web portal by visiting http://localhost:9870/dfshealth.html#tab-overview in your browser.
-Start YARN Daemons
-Important: You may encounter permission issues if you start YARN daemons as a regular user. To avoid this, open Command Prompt as an administrator.
+```
+
+Two Command Prompt windows will open: one for datanode and another for namenode **DONOT CLOSE THESE WINDOWS**
+
+Verify HDFS Web portal by opening `http://localhost:9870/dfshealth.html#tab-overview` in your browser.
+
+### Start YARN daemons
+
+warning You may encounter permission issues if you start YARN daemons using normal user. To ensure you don't encounter any issues. Please open a Command Prompt window using Run as administrator.
+
 Run the following command in an elevated Command Prompt window (Run as administrator) to start YARN daemons:
-perl
-Copy code
+
+```
 %HADOOP_HOME%\sbin\start-yarn.cmd
-Again, two Command Prompt windows will open: one for the resource manager and another for the node manager. Do not close these windows.
-Verify the Hadoop Resource Manager by visiting http://localhost:8088 in your browser.
+```
+
+Similarly two Command Prompt windows will open: one for resource manager and another for node manager **DONOT CLOSE THESE WINDOWS**
+- Verify Hadoop Resource manager by opening `http://localhost:8088` in you browser.
